@@ -1,3 +1,4 @@
+
 let favoriteCityId = 'rome';
 console.log(favoriteCityId);
 
@@ -85,11 +86,12 @@ freeTrip = new FreeTrip();
 console.log(freeTrip.toString());
 
 
+
 class TripService {
 
     constructor() {
         // TODO Set of 3 trips
-        this.trips = new set();
+        this.trips = new Set();
         this.trips.add( new Trip('paris', 'Paris', 'img/paris.jpg'));
         this.trips.add( new Trip('nantes', 'Nantes', 'img/nanges.jpg'));
         this.trips.add( new Trip('rio-de-janeiro', 'Rio de Janeiro', 'img/rio-de-janeiro.jpg'));
@@ -98,18 +100,17 @@ class TripService {
 
     findByName(tripName) {
         // TODO return promise
-        return new Promise(function (resolve, reject) {
+        return new Promise( (resolve, reject) => {
 
             let tripFound = Array.from(this.trips)
               .find(t => t.name == tripName)
       
               if(tripFound) {
-                  resolve(tripFound);
+                  resolve('Trip found : ' + tripFound);
               } else {
-                  reject("No trip with name "+tripName);
+                  reject("No trip with name "+ tripName);
               }
-          });
-    
+          });  
 
 }
 }
@@ -117,13 +118,63 @@ class TripService {
 class PriceService {
 
     constructor() {
+        this.tripsMap = new Map();
+        this.tripsMap.set("paris", 100);
+        this.tripsMap.set("rio-de-janeiro", 800);
         // TODO Map of 2 trips
         // 'paris' --> price = 100
         // 'rio-de-janeiro' --> price = 800)
+        
         // no price for 'nantes'
     }
 
     findPriceByTripId(tripId) {
-        // TODO return promise
-    }
+        return new Promise((resolve, reject) => {
+          setTimeout(() => {
+            let tripFromMap = this.tripsMap.get(tripId);
+            if (tripFromMap != null) {
+              resolve("Price found : " + tripFromMap);
+            } else {
+              reject("No price for trip id " + tripId);
+            }
+          }, 2000);
+        });
+      }
 }
+let tripService = new TripService();
+let priceService = new PriceService();
+
+tripService.findByName('Paris')
+    .then(function(success){
+        console.log(success)
+        }, function(error){
+            console.log(error)
+        }
+    );
+
+
+tripService.findByName('Toulouse')
+    .then(function(success){
+        console.log(success)
+        }, function(error){
+            console.log(error)
+        }
+    );
+
+priceService.findPriceByTripId('rio-de-janeiro')
+.then(function(success){
+    console.log(success)
+    }, function(error){
+        console.log(error)
+    }
+);
+
+priceService.findPriceByTripId('nantes')
+.then(function(success){
+    console.log(success)
+    }, function(error){
+        console.log(error)
+    }
+);
+
+    
