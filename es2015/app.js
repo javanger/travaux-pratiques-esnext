@@ -121,3 +121,98 @@ parisTrip.price = 100;
 console.log(parisTrip.toString());
 const defaultTrip = Trip.getDefaultTrip();
 console.log("defaultTrip ", defaultTrip.toString());
+/*
+Créer la classe FreeTrip qui étends Trip.
+Elle se construit avec les informations suivantes : id, name et imageUrl. La propriété price est valorisé par défaut à 0.
+Créer une constante freeTrip, instance de la classe FreeTrip avec les informations suivantes :
+id : nantes
+name : Nantes
+imageUrl : img/nantes.jpg
+Afficher dans la console freeTrip.toString()
+Redéfinir la méthode toString() dont le résultat est la concaténation de la chaîne de caractères Free et du résultat de l'exécution de la méthode toString() de la classe Trip.
+*/
+class FreeTrip extends Trip {
+  constructor(id, name, image) {
+    super(id, name, image);
+    this._price = 0;
+  }
+
+  toString() {
+    return `Free${super.toString()}`;
+  }
+}
+const freeTrip = new FreeTrip("nantes", "Nantes", "img/nantes.jpg");
+console.log("freeTrip: ", freeTrip.toString());
+/*
+Compléter le constructeur de la classe TripService pour initialiser un Set de 3 objet Trip.
+
+Compléter le constructeur de la classe PriceService pour initialiser une Map (clé = identifiant voyage, valeur = prix). Stocker y 2 prix pour les villes Paris et Rio de Janeiro.
+
+Compléter la méthode findByName(tripName) pour qu'elle renvoie une promesse.
+
+Pour simuler une récupération des données distantes, utiliser la méthode setTimeout(fn,delay) pour créer une latence de 2s.
+Renvoyer l'objet Trip correspondant au nom du voyage en paramètre.
+Si aucun voyage ne correspond au nom en paramètre, renvoyer une erreur No trip with name xxx.
+Compléter la méthode findPriceByTripId pour qu'elle renvoie une promesse.
+
+Utiliser la méthode setTimeout(fn,delay) pour créer une latence de 2s.
+Renvoyer la valeur du prix si trouvé
+Si aucun prix trouvé, renvoyer l'erreur No price found for id xxxx.
+Créer une instance de TripService et une instance de PriceService.
+
+Effectuer une recherche par nom de voyage avec la valeur Paris. Afficher dans la console le résultat trouvé.
+*/
+class TripService {
+  constructor() {
+    //  Set of 3 trips
+    this.trips = new Set();
+    this.trips.add(new Trip("paris", "Paris", "img/paris.jpg"));
+    this.trips.add(new Trip("nantes", "Nantes", "img/nantes.jpg"));
+    this.trips.add(
+      new Trip("rio-de-janeiro", "Rio de Janeiro", "img/rio-de-janeiro.jpg")
+    );
+  }
+
+  findByName(tripName) {
+    return new Promise((succes, error) => {
+      setTimeout(() => {
+        let res = Array.from(this.trips).find(
+          t => t.name.toLowerCase() == tripName.toLowerCase()
+        );
+        res ? succes(res) : error(`No trip with name ${tripName}`);
+      }, 2000);
+    });
+  }
+}
+
+console.log(new TripService());
+new TripService()
+  .findByName("Paris")
+  .then(
+    val => console.log("succes :", val),
+    val => console.log("error: ", val)
+  );
+
+class PriceService {
+  constructor() {
+    this.prices = new Map();
+    this.prices.set("paris", 100);
+    this.prices.set("rio-de-janeiro", 800);
+  }
+
+  findPriceByTripId(tripId) {
+    return new Promise((succes, error) => {
+      setTimeout(() => {
+        let res = this.prices.get(tripId.toLowerCase());
+        res ? succes(res) : error(`No price found for id ${tripId}`);
+      }, 2000);
+    });
+  }
+}
+console.log(new PriceService());
+new PriceService()
+  .findPriceByTripId("nantes")
+  .then(
+    val => console.log("succes :", val),
+    val => console.log("error: ", val)
+  );
