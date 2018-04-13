@@ -140,6 +140,7 @@ class PriceService {
           }, 2000);
         });
       }
+      
 }
 let tripService = new TripService();
 let priceService = new PriceService();
